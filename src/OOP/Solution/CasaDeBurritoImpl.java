@@ -7,11 +7,11 @@ import java.util.*;
 
 
 public class CasaDeBurritoImpl implements CasaDeBurrito {
-    public int burritoId;
-    public String burritoName;
-    public int burritoDist;
-    public Set<String> burritoMenu;
-    public HashMap<Profesor, Integer> burritoRankByProfs;
+    private int burritoId;
+    private String burritoName;
+    private int burritoDist;
+    private Set<String> burritoMenu;
+    private HashMap<Profesor, Integer> burritoRankByProfs;
 
     public CasaDeBurritoImpl(int id, String name, int dist, Set<String> menu) {
         burritoId = id;
