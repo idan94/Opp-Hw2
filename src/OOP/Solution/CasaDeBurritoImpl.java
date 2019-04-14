@@ -61,10 +61,11 @@ public class CasaDeBurritoImpl implements CasaDeBurrito {
         return avg;
     }
 
-    public int compareTo(CasaDeBurrito cdbi){
-        int diff = 5-2;
-        return diff;
+    @Override
+    public int compareTo(CasaDeBurrito o) {
+        return this.burritoId - o.getId();
     }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof CasaDeBurritoImpl)) return false;
@@ -72,8 +73,6 @@ public class CasaDeBurritoImpl implements CasaDeBurrito {
         Integer id = burritoId;
         return id.equals(other.burritoId);
     }
-
-
 
 
 }

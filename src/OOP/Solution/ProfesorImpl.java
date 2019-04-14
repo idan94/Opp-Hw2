@@ -61,12 +61,30 @@ public class ProfesorImpl implements Profesor {
     }
 
     public Collection<CasaDeBurrito> favoritesByRating(int rLimit) {
-        Comparator<CasaDeBurrito> comparator = Comparator.comparing(b -> b.averageRating());
-        //TODO: reverse it + check if the want rate, its mean the avg rate
+        Comparator<CasaDeBurrito> comparator = (Comparator.comparing(b -> b.averageRating()));
+        comparator = comparator.reversed();
         comparator = comparator.thenComparing(Comparator.comparing(b -> b.distance()));
         comparator = comparator.thenComparing(Comparator.comparing(b -> b.getId()));
-        return favorites().stream().filter((b) -> b.averageRating() >= rLimit)
-                .sorted(comparator).collect(Collectors.toList());
+        return this.filterAndSortFavorites(comparator, (b) -> b.averageRating() >= rLimit);
     }
 
+    public Collection<CasaDeBurrito> favoritesByDist(int dLimit) {
+        Comparator<CasaDeBurrito> comparator = Comparator.comparing(b -> b.distance());
+        comparator = comparator.thenComparing(Comparator.comparing(b -> b.averageRating())).reversed();
+        comparator = comparator.thenComparing(Comparator.comparing(b -> b.getId()));
+        return this.filterAndSortFavorites(comparator, (b) -> b.distance() <= dLimit);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ProfesorImpl)) return false;
+        ProfesorImpl other = (ProfesorImpl) o;
+        Integer id = profesorId;
+        return id.equals(other.profesorId);
+    }
+
+    @Override
+    public int compareTo(Profesor o) {
+        return this.profesorId - o.getId();
+    }
 }
