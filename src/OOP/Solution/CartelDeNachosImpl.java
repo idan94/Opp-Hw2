@@ -71,24 +71,49 @@ public class CartelDeNachosImpl implements CartelDeNachos {
     public Collection<CasaDeBurrito> favoritesByRating(Profesor p)
             throws Profesor.ProfesorNotInSystemException {
         if (!profesorsMap.containsValue(p)) throw new Profesor.ProfesorNotInSystemException();
-        List<Profesor> profFriendList = p.getFriends().stream().sorted().collect(Collectors.toList());
-        List<CasaDeBurrito> tempListToReturn = new ArrayList<>();
-        profFriendList.forEach(profFriend -> tempListToReturn.addAll(profFriend.favoritesByRating(0)));
-        return tempListToReturn.stream().distinct().collect(Collectors.toList());
+        return p.getFriends().stream()
+                .sorted()
+                .map(proFriend -> proFriend.favoritesByRating(0))
+                .flatMap(casa -> casa.stream())
+                .distinct()
+                .collect(Collectors.toList());
+
     }
 
     public Collection<CasaDeBurrito> favoritesByDist(Profesor p)
             throws Profesor.ProfesorNotInSystemException {
         if (!profesorsMap.containsValue(p)) throw new Profesor.ProfesorNotInSystemException();
-        List<Profesor> profFriendList = p.getFriends().stream().sorted().collect(Collectors.toList());
-        List<CasaDeBurrito> tempListToReturn = new ArrayList<>();
-        int maxDist = 0;
-        Comparator<CasaDeBurrito> comparator = Comparator.comparing(b -> b.distance());
-        comparator = comparator.thenComparing(Comparator.comparing(b -> b.averageRating())).reversed();
-        comparator = comparator.thenComparing(Comparator.comparing(b -> b.getId()));
-        final Comparator<CasaDeBurrito> finalComp = comparator;
-        profFriendList.forEach(profFriend -> tempListToReturn.addAll(profFriend.favorites().stream().sorted(finalComp).collect(Collectors.toList())));
-        return tempListToReturn.stream().distinct().collect(Collectors.toList());
+        int maxDist = p.getFriends().stream()
+                .map(proFriend -> proFriend.favorites())
+                .flatMap(casa -> casa.stream())
+                .mapToInt(casa -> casa.distance()).max().orElse(0);
+        return p.getFriends().stream()
+                .sorted()
+                .map(proFriend -> proFriend.favoritesByDist(maxDist))
+                .flatMap(casa -> casa.stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public boolean getRecommendation(Profesor p, CasaDeBurrito c, int t)
+            throws Profesor.ProfesorNotInSystemException, CasaDeBurrito.CasaDeBurritoNotInSystemException, ImpossibleConnectionException {
+        if (!profesorsMap.containsValue(p)) throw new Profesor.ProfesorNotInSystemException();
+        if (!burritoMap.containsValue(c)) throw new CasaDeBurrito.CasaDeBurritoNotInSystemException();
+        if (t < 0) throw new ImpossibleConnectionException();
+        Set<Profesor> profesorsTLength = new HashSet<>();
+        Set<Profesor> profesorTempGroup = new HashSet<>();
+        profesorTempGroup.add(p); //add
+        for (int i = 0; i < t; i++) {
+            for (Profesor pIterator : profesorsTLength) {
+                profesorTempGroup.addAll(pIterator.getFriends());
+            }
+            profesorsTLength.addAll(profesorTempGroup);
+        }
+        return true;//TODO: להכניס את כל הפרופסורים שבמחרק טי מהנוכחי, ואז לעשות סינון למסעדות מועדפות
+    }
+
+    public List<Integer> getMostPopularRestaurantsIds() {
+        return new ArrayList<>();//TODO:
     }
 
 }

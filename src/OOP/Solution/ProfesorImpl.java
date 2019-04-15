@@ -53,11 +53,16 @@ public class ProfesorImpl implements Profesor {
     }
 
     public Set<Profesor> filteredFriends(Predicate<Profesor> p) {
-        return getFriends().stream().filter(p).collect(Collectors.toSet());
+        return getFriends().stream()
+                .filter(p)
+                .collect(Collectors.toSet());
     }
 
     public Collection<CasaDeBurrito> filterAndSortFavorites(Comparator<CasaDeBurrito> comp, Predicate<CasaDeBurrito> p) {
-        return favorites().stream().filter(p).sorted(comp).collect(Collectors.toList());
+        return favorites().stream()
+                .filter(p)
+                .sorted(comp)
+                .collect(Collectors.toList());
     }
 
     public Collection<CasaDeBurrito> favoritesByRating(int rLimit) {
