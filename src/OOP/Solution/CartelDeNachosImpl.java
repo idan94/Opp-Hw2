@@ -93,7 +93,6 @@ public class CartelDeNachosImpl implements CartelDeNachos {
                 .flatMap(casa -> casa.stream())
                 .distinct()
                 .collect(Collectors.toList());
-                
     }
 
     public boolean getRecommendation(Profesor p, CasaDeBurrito c, int t)
